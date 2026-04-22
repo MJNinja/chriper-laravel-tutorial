@@ -72,6 +72,17 @@ services:
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
         networks:
             - sail
+    phpmyadmin:
+        image: phpmyadmin
+        depends_on:
+            - mariadb
+        environment:
+            - PMA_HOST=${DB_HOST}
+            - PMA_PORT=${DB_PORT}
+        networks:
+            - sail
+        ports:
+            - 8080:80
 networks:
     sail:
         driver: bridge
