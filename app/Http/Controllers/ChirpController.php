@@ -10,12 +10,21 @@ class ChirpController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 */
-	public function index()
+	public function index(Request $request)
 	{
-		$chirps = Chirp::with('user')
+		/*$chirps = Chirp::with('user')
 			->latest()
 			->take(50)  // Limit to 50 most recent chirps
-			->get();
+			->get();*/
+
+		$chirps = Chirp::with('user')
+			->latest()
+			->simplePaginate(3);
+
+		// If page query is 1, redirect to home page
+		if ((int) $request->query('page') === 1) {
+			return redirect()->route('home');
+		}
 
 		return view('home', ['chirps' => $chirps]);
 	}

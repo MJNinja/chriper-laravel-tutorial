@@ -7,4 +7,4 @@ use Illuminate\Support\Facades\Route;
 	return view('home');
 });*/
 
-Route::get('/', [ChirpController::class, 'index']);
+Route::get('/', [ChirpController::class, 'index'])->name('home');
