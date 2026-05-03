@@ -3,20 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Chirp;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
 class ChirpController extends Controller
 {
+
+	use AuthorizesRequests;
 	/**
 	 * Display a listing of the resource.
 	 */
 	public function index(Request $request)
 	{
-		/*$chirps = Chirp::with('user')
-			->latest()
-			->take(50)  // Limit to 50 most recent chirps
-			->get();*/
 
+		// Paginate through chirps
 		$chirps = Chirp::with('user')
 			->latest()
 			->simplePaginate(5);
@@ -50,14 +50,10 @@ class ChirpController extends Controller
 			'message.max' => 'Chirps must be 255 characters or less.',
 		]);
 
-		// Create the chirp (no user for now - we'll add auth later)
-		Chirp::create([
-			'message' => $validated['message'],
-			'user_id' => null, // We'll add authentication in lesson 11
-		]);
+		// Create the chirp assigned to specific user
+		auth()->user()->chirps()->create($validated);
 
 		// Redirect back to the feed
-		//return redirect('/')->with('success', 'Chirp created!');
 		return redirect()->route('home')->with('success', 'Your chirp has been posted!');
 	}
 
@@ -74,6 +70,9 @@ class ChirpController extends Controller
 	 */
 	public function edit(Chirp $chirp)
 	{
+		// Validate User
+		$this->authorize('update', $chirp);
+
 		return view('chirps.edit', compact('chirp'));
 	}
 
@@ -82,6 +81,9 @@ class ChirpController extends Controller
 	 */
 	public function update(Request $request, Chirp $chirp)
 	{
+		// Validate User
+		$this->authorize('update', $chirp);
+
 		// Validate the request
 		$validated = $request->validate([
 			'message' => 'required|string|max:255',
@@ -102,6 +104,9 @@ class ChirpController extends Controller
 	 */
 	public function destroy(Chirp $chirp)
 	{
+		// Validate USer
+		$this->authorize('delete', $chirp);
+
 		// Delete the chirp
 		$chirp->delete();
 
