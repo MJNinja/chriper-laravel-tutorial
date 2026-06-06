@@ -7,4 +7,4 @@ This project is the tutorial done through [Laravel Learn](https://laravel.com/le
 This project was also done using Laravel Sail to also learn a bit more about Docker.
 
 ## License
-This package is open-source software licensed under the MIT license.
+This project is licensed under the MIT License.
